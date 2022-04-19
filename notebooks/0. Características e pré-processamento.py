@@ -59,7 +59,7 @@
 # ### Instâncias e balanceamento das classes
 #
 # - Número total de instâncias: 17.898
-# - Classe 0 (rúido): 16.259 (90,84%)
+# - Classe 0 (ruído): 16.259 (90,84%)
 # - Classe 1 (pulsar): 1.639 (9,16%)
 #
 # ### Instâncias sem missing values
@@ -195,6 +195,8 @@ not_pulsar = df[df.pulsar==0]
 
 # ### A razão SNR é maior nos pulsares
 
+mannwhitneyu(pulsar["dmsnr_media"], not_pulsar["dmsnr_media"]).pvalue
+
 mannwhitneyu(pulsar["dmsnr_media"], not_pulsar["dmsnr_media"]).pvalue < 5e-2
 
 df.groupby("pulsar")["dmsnr_media"].mean()
@@ -264,7 +266,7 @@ print("Distribuição das classes")
 plot_class_balance(df3, "pulsar")
 # -
 
-df_without_outliers = df3.copy()
+df_without_outliers = df3.copy().drop(columns=["outlier"])
 
 # ---
 
@@ -312,5 +314,9 @@ plot_class_balance(df_without_outliers, "pulsar")
 
 df_without_outliers.to_csv("../data/preprocessed/train_unbalanced.csv", index=False)
 df_balanced.to_csv("../data/preprocessed/train_balanced.csv", index=False)
+
+df_without_outliers.head(10)
+
+df_balanced.shape
 
 
