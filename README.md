@@ -9,8 +9,8 @@
 ### Linux
 ```
 $ python3 -m venv venv
-$ pip install -r requirements
 $ . venv/bin/activate
+$ pip install -r requirements
 ```
 
 ### Windows
