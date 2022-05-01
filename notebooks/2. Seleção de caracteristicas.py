@@ -18,8 +18,10 @@
 # Seleção de caracteristicas
 
 # +
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 from sklearn.datasets import load_iris
 from sklearn.feature_selection import SelectKBest, SelectFdr, SelectFpr, SelectFwe, SelectPercentile
@@ -99,6 +101,8 @@ from feature_engine.selection import SmartCorrelatedSelection
 df_smart = pd.DataFrame(SmartCorrelatedSelection(selection_method="variance").fit_transform(X, y))
 df_smart
 
-X.corr()
+fig ,ax = plt.subplots(figsize=(12, 6))
+sns.heatmap(X.corr("pearson"), annot=True, ax=ax, linewidths=.5, mask=np.triu(X.corr()))
+plt.show()
 
 
