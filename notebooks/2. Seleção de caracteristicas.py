@@ -13,9 +13,7 @@
 #     name: python3
 # ---
 
-# ![image.png](attachment:9ec502cf-dfeb-40b6-8bf5-3c6ddf605c12.png)
-
-# Seleção de caracteristicas
+# # Seleção de caracteristicas
 
 # +
 import matplotlib.pyplot as plt
@@ -87,14 +85,24 @@ fdr.pvalues_
 
 percentile = SelectPercentile(mutual_info_classif, percentile=80)
 
+# Utilizando o parâmetro percentile=80, selecionamos todas as variáveis que estão acima do percentil 20, \
+# utilizamos este threshold pois foi a partir dele que a feature dmsnr_media, considerada relavante pela literatura, \
+# entrou nas features selecionadas.
+
 X_percentile = percentile.fit_transform(X, y)
 
 df_percentile = pd.DataFrame(X_percentile, columns=percentile.get_feature_names_out(input_features))
 df_percentile.head()
 
-# # SmartCorrelatedSelection
+percentile.feature_names_in_
 
-# !pip install feature-engine
+percentile.scores_
+
+np.percentile(percentile.scores_, 20)
+
+percentile.scores_
+
+# # SmartCorrelatedSelection
 
 from feature_engine.selection import SmartCorrelatedSelection
 
