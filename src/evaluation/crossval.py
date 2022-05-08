@@ -13,7 +13,7 @@ def __get_positives_and_negatives(y):
 def cross_validate(df: pd.DataFrame, k: int):
     X = df.iloc[:, :-1]
     y = df["pulsar"]
-    
+
     t, positive, negative = __get_positives_and_negatives(y)
 
     print(
