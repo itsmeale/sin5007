@@ -15,7 +15,6 @@ def cross_validate(df: pd.DataFrame, k: int):
     y = df["pulsar"]
     
     t, positive, negative = __get_positives_and_negatives(y)
-    print(t, positive, negative)
 
     print(
         f"{positive} positivas e {negative} negativas "
