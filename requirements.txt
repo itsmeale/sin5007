@@ -86,7 +86,6 @@ Send2Trash==1.8.0
 six==1.16.0
 sniffio==1.2.0
 soupsieve==2.3.2.post1
--e git+git@github.com:itsmeale/sin5007.git@0cd25c63c8a9b11fd608bf3799450bdb4f2ca402#egg=src
 stack-data==0.2.0
 statsmodels==0.13.2
 terminado==0.13.3
