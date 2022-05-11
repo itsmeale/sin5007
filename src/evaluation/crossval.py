@@ -1,42 +1,9 @@
-from pprint import pprint
 from typing import Dict, List
 
 import numpy as np
 import pandas as pd
 import statsmodels.stats.api as stats
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import StratifiedKFold
-
-METRICS: Dict = {
-    "recall": {
-        "method": recall_score,
-        "array": list(),
-        "mean": None,
-        "ic_min": None,
-        "ic_max": None,
-    },
-    "precision": {
-        "method": precision_score,
-        "array": list(),
-        "mean": None,
-        "ic_min": None,
-        "ic_max": None,
-    },
-    "accuracy": {
-        "method": accuracy_score,
-        "array": list(),
-        "mean": None,
-        "ic_min": None,
-        "ic_max": None,
-    },
-    "f1": {
-        "method": f1_score,
-        "array": list(),
-        "mean": None,
-        "ic_min": None,
-        "ic_max": None,
-    },
-}
 
 
 def __get_positives_and_negatives(y):
@@ -63,13 +30,16 @@ def print_dataset_balance(y):
     )
 
 
-def cross_validate(estimator, df: pd.DataFrame, k: int, metrics: Dict):
+def cross_validate(data: pd.DataFrame, estimator, k: int, metrics: Dict):
     # separa variaveis independentes X da variavel alvo y
-    X = df.iloc[:, :-1]
-    y = df["pulsar"]
+    X = data.iloc[:, :-1]
+    y = data["pulsar"]
 
     print_dataset_balance(y)
     kfold = StratifiedKFold(n_splits=k)
+
+    # TODO: adaptar funcao para rodar os k folds para cada conjunto
+    # de hiperparametros
 
     # para cada fold
     for idx, (train_idx, test_idx) in enumerate(kfold.split(X, y)):
@@ -77,8 +47,9 @@ def cross_validate(estimator, df: pd.DataFrame, k: int, metrics: Dict):
         y_train, y_test = y[train_idx], y[test_idx]
 
         # ajuste e predicoes
-        estimator.fit(X_train, y_train)
-        y_pred = estimator.predict(X_test)
+        clf = estimator()
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
 
         # calcula metricas de desempenho
         for metric in metrics.keys():
@@ -87,16 +58,11 @@ def cross_validate(estimator, df: pd.DataFrame, k: int, metrics: Dict):
 
     for metric in metrics.keys():
         # calcula media e intervalo de confianca (95%) para cada metrica
-        mean, (ic_min, ic_max) = summary_metric_array(metrics[metric]["array"])
+        mean, (ci_lower, ci_upper) = summary_metric_array(metrics[metric]["array"])
         metrics[metric]["mean"] = mean
-        metrics[metric]["ic_min"] = ic_min
-        metrics[metric]["ic_max"] = ic_max
+        metrics[metric]["ci_lower"] = ci_lower
+        metrics[metric]["ci_upper"] = ci_upper
 
+    # TODO: adaptar o retorno para ser o melhor conjunto de hiperparametros selecionado
+    # com base em uma metrica especifica escolhida por parametro da funcao
     return metrics
-
-
-if __name__ == "__main__":
-    from sklearn.naive_bayes import GaussianNB
-
-    df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
-    pprint(cross_validate(estimator=GaussianNB(), df=df, k=10, metrics=METRICS))
