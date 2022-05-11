@@ -1,10 +1,9 @@
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import RFE, VarianceThreshold
-
+from sklearn.preprocessing import MinMaxScaler
 
 random_state = 0
 

@@ -1,10 +1,9 @@
+from itertools import product
 from typing import List
-import seaborn as sns
-import pandas as pd
 
 import matplotlib.pyplot as plt
-from itertools import product
-
+import pandas as pd
+import seaborn as sns
 
 PULSAR_COLOR: str = "#805BFF"
 NOISE_COLOR: str = "#B6B2B8"

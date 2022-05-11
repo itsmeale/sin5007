@@ -1,8 +1,8 @@
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from src.features.preprocessing import PREPROCESSING_PIPELINES
 from imblearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 
+from src.features.preprocessing import PREPROCESSING_PIPELINES
 
 MODELS = {
     "tree": {
