@@ -2,6 +2,7 @@ from itertools import product
 from typing import List
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -74,3 +75,31 @@ def plot_class_balance(df, class_column):
         .style.bar(subset=["rel_freq"])
         .format("{:.2%}", subset=["rel_freq"])
     )
+
+
+def make_bar_chart_comparision(metrics_df: pd.DataFrame):
+    # Work in progress
+    fig, ax = plt.subplots(dpi=150)
+
+    metric = "recall"
+
+    bar_width = 0.2
+    x_positions = np.arange(len(metrics_df))
+
+    metrics_nb = metrics_df[metrics_df.model_name == "naive_bayes"]
+
+    plt.bar(
+        [0],
+        metrics_nb["recall"][0],
+        width=bar_width,
+        edgecolor="k",
+        label=metrics_nb["model_name"][0],
+    )
+
+    plt.errorbar(
+        [0], metrics_nb["recall"][0], capsize=5, yerr=[[0.1], [0.2]], fmt="o", color="k"
+    )
+
+    plt.legend()
+
+    plt.savefig("outputs/model_comparision.png")

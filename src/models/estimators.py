@@ -48,7 +48,7 @@ class Estimator:
 
         return parameter_combinations
 
-    def save_metrics(self):
+    def save_metrics(self, metrics_folder: str):
         """Serialize metrics and estimator parameters to csv"""
         logger.info(f"Saving metrics for model {self.model_name}...")
 
@@ -78,4 +78,6 @@ class Estimator:
             }
         )
 
-        serialized_metrics_df.to_csv(f"data/results/{self.model_name}.csv", index=False)
+        serialized_metrics_df.to_csv(
+            f"{metrics_folder}/{self.model_name}.csv", index=False
+        )

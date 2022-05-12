@@ -6,7 +6,8 @@ from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import MinMaxScaler
 
-from src.evaluation.metrics import METRICS
+from src.dataviz.plots import make_bar_chart_comparision
+from src.evaluation.metrics import METRICS, aggregate_metrics
 from src.models.estimators import Estimator
 
 NAIVE_BAYES_PCA = Estimator(
@@ -92,7 +93,14 @@ MODELS = [
 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
+    metrics_folder = "data/results"
+    metrics_file = "data/results/metrics.csv"
 
     for model in MODELS:
         model.evaluate(df)
-        model.save_metrics()
+        model.save_metrics(metrics_folder)
+
+    aggregate_metrics(metrics_folder=metrics_folder, save_to=metrics_file)
+    metrics_df = pd.read_csv(metrics_file)
+
+    make_bar_chart_comparision(metrics_df)
