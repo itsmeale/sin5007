@@ -65,7 +65,8 @@ def cross_validate(
 
     logger.info(f"Running CV with k={k} for each hyper parameter combinarion...")
     for param_combination in tqdm(parameters):
-        clf = estimator.model_pipeline(**param_combination)
+        clf = estimator.model_pipeline
+        clf.set_params(**param_combination)
         score, _metrics = __run_kfolds(clf, folds, X, y, criterion, metrics)
 
         if not highest_score or score > highest_score:
