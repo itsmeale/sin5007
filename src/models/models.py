@@ -6,10 +6,9 @@ from src.models.estimators import Estimator
 
 NAIVE_BAYES = Estimator(
     model_name="naive_bayes",
-    balance_dataset=0,
-    feature_selection=0,
-    params={"var_smoothing": [1e-9, 1e-5]},
-    best_params={},
+    is_balanced=False,
+    feature_selection=None,
+    param_grid=[{"var_smoothing": [1e-9, 1e-5]}],
     metrics=METRICS,
     model_pipeline=GaussianNB,
 )

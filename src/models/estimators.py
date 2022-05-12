@@ -1,11 +1,17 @@
 from dataclasses import dataclass
-from typing import Dict
+from itertools import product
+from pprint import pprint
+from typing import Dict, List
 
 import pandas as pd
+from loguru import logger
 from sklearn.pipeline import Pipeline
 
 from src.evaluation.crossval import cross_validate
 from src.evaluation.metrics import METRICS
+
+K_FOLDS = 10
+MODEL_SELECTION_CRITERIA = "f1_score"
 
 
 @dataclass
@@ -14,25 +20,44 @@ class Estimator:
     model_name: str
     is_balanced: bool
     feature_selection: str
-    params: Dict
-    best_params: Dict
+    param_grid: List[Dict]
     metrics: Dict
     model_pipeline: Pipeline
+    best_params: Dict = None
 
     def evaluate(self, df: pd.DataFrame):
-        """Run cross validation for the model_pipeline"""
-        cross_validate(
-            data=df, estimator=self.model_pipeline, k=10, metrics=self.metrics
+        """Runs cross validation with k folds and returns best hyper parameters"""
+        best_params, best_metrics = cross_validate(
+            data=df,
+            estimator=self,
+            k=K_FOLDS,
+            metrics=self.metrics,
+            criterion=MODEL_SELECTION_CRITERIA,  # to choose the best model
+            parameters=self.get_hyperparameters_combinations(),
         )
+        self.metrics.update(best_metrics)
+        self.best_params = best_params
+
+    def get_hyperparameters_combinations(self):
+        """Creates the combinations of hyperparameters that are defined on the param grid"""
+        parameter_combinations = [
+            dict(zip(grid.keys(), combination))
+            for grid in self.param_grid
+            for combination in list(product(*grid.values()))
+        ]
+
+        return parameter_combinations
 
     def save_metrics(self):
         """Serialize metrics and estimator parameters to csv"""
+        logger.info(f"Saving metrics for model {self.model_name}...")
+
         serialized_metrics_df = pd.DataFrame(
             {
                 "model_name": [self.model_name],
-                "balance_dataset": [self.balance_dataset],
+                "is_balanced": [self.is_balanced],
                 "feature_selection": [self.feature_selection],
-                "params": [self.params],
+                "param_grid": [self.param_grid],
                 "best_params": [self.best_params],
                 # accuracy metrics
                 "accuracy": [self.metrics["accuracy"]["mean"]],
@@ -54,15 +79,3 @@ class Estimator:
         )
 
         serialized_metrics_df.to_csv(f"data/results/{self.model_name}.csv", index=False)
-
-
-if __name__ == "__main__":
-    estimator = Estimator(
-        model_name="meu_modelo_1",
-        balance_dataset=1,
-        feature_selection=None,
-        params={"MAP": 1},
-        metrics=METRICS,
-        model_pipeline=None,
-    )
-    estimator.save_metrics()
