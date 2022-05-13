@@ -1,7 +1,6 @@
 from typing import Dict, List
 
 import numpy as np
-import pandas as pd
 import statsmodels.stats.api as stats
 from loguru import logger
 from sklearn.model_selection import StratifiedKFold
@@ -18,7 +17,7 @@ def summary_metric_array(metric_array: List):
 def __run_kfolds(clf, folds, X, y, criterion, metrics):
     _metrics = metrics.copy()
 
-    for idx, (train_idx, test_idx) in tqdm(list(enumerate(folds))):
+    for (train_idx, test_idx) in tqdm(list(folds)):
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
 
@@ -43,18 +42,15 @@ def __run_kfolds(clf, folds, X, y, criterion, metrics):
 
 
 def cross_validate(
-    data: pd.DataFrame,
+    X,
+    y,
     estimator,
     k: int,
     metrics: Dict,
     criterion: str,
     parameters: List[Dict],
 ):
-    logger.info(f"Starting cross validation for model {estimator.model_name}...")
-
-    # separa variaveis independentes X da variavel alvo y
-    X = data.iloc[:, :-1]
-    y = data["pulsar"]
+    logger.info(f"Starting cross validation...")
 
     kfold = StratifiedKFold(n_splits=k)
     folds = kfold.split(X, y)
@@ -65,9 +61,8 @@ def cross_validate(
 
     logger.info(f"Running CV with k={k} for each hyper parameter combinarion...")
     for param_combination in parameters:
-        clf = estimator.model_pipeline
-        clf.set_params(**param_combination)
-        score, _metrics = __run_kfolds(clf, folds, X, y, criterion, metrics)
+        estimator.set_params(**param_combination)
+        score, _metrics = __run_kfolds(estimator, folds, X, y, criterion, metrics)
 
         if not highest_score or score > highest_score:
             best_params = param_combination

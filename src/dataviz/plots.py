@@ -128,6 +128,6 @@ def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
     else:
         plt.xticks(bar_positions - bar_width, scenarios)
 
-    plt.savefig("outputs/model_comparision.png", dpi=300)
+    plt.savefig(f"outputs/model_comparision-{metric}.png", dpi=300)
 
     return fig
