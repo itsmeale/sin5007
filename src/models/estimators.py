@@ -18,6 +18,7 @@ MODEL_SELECTION_CRITERIA = "f1_score"
 class Estimator:
 
     model_name: str
+    scenario_name: str
     is_balanced: bool
     feature_selection: str
     param_grid: List[Dict]
@@ -55,6 +56,7 @@ class Estimator:
         serialized_metrics_df = pd.DataFrame(
             {
                 "model_name": [self.model_name],
+                "scenario_name": [self.scenario_name],
                 "is_balanced": [self.is_balanced],
                 "feature_selection": [self.feature_selection],
                 "param_grid": [self.param_grid],

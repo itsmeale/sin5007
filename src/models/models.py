@@ -11,7 +11,8 @@ from src.evaluation.metrics import METRICS, aggregate_metrics
 from src.models.estimators import Estimator
 
 NAIVE_BAYES_PCA = Estimator(
-    model_name="naive_bayes_pca",
+    model_name="naive_bayes",
+    scenario_name="PCA",
     is_balanced=False,
     feature_selection="PCA",
     param_grid=[{"clf__var_smoothing": [1e-9, 1e-5]}],
@@ -26,28 +27,14 @@ NAIVE_BAYES_PCA = Estimator(
 )
 
 NAIVE_BAYES_FS = Estimator(
-    model_name="naive_bayes_mi",
+    model_name="naive_bayes",
+    scenario_name="ENTROPY",
     is_balanced=False,
     feature_selection="MI",
     param_grid=[{"clf__var_smoothing": [1e-9, 1e-5]}],
     metrics=METRICS,
     model_pipeline=Pipeline(
         steps=[
-            ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
-            ("clf", GaussianNB()),
-        ]
-    ),
-)
-
-NAIVE_BAYES_FS_MIN_MAX = Estimator(
-    model_name="naive_bayes_fs_min_max",
-    is_balanced=False,
-    feature_selection="MI",
-    param_grid=[{"clf__var_smoothing": [1e-9, 1e-5]}],
-    metrics=METRICS,
-    model_pipeline=Pipeline(
-        steps=[
-            ("scaler", MinMaxScaler()),
             ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
             ("clf", GaussianNB()),
         ]
@@ -56,6 +43,7 @@ NAIVE_BAYES_FS_MIN_MAX = Estimator(
 
 NAIVE_BAYES = Estimator(
     model_name="naive_bayes",
+    scenario_name="NO PREPROCESSING",
     is_balanced=False,
     feature_selection=None,
     param_grid=[{"clf__var_smoothing": [1e-9, 1e-5]}],
@@ -68,7 +56,8 @@ NAIVE_BAYES = Estimator(
 )
 
 NAIVE_BAYES_SMOTE = Estimator(
-    model_name="naive_bayes_smote",
+    model_name="naive_bayes",
+    scenario_name="NO PREPROCESSING",
     is_balanced=True,
     feature_selection=None,
     param_grid=[{"clf__var_smoothing": [1e-9, 1e-5]}],
@@ -84,10 +73,8 @@ NAIVE_BAYES_SMOTE = Estimator(
 
 MODELS = [
     NAIVE_BAYES,
-    NAIVE_BAYES_SMOTE,
     NAIVE_BAYES_PCA,
     NAIVE_BAYES_FS,
-    NAIVE_BAYES_FS_MIN_MAX,
 ]
 
 
