@@ -1,8 +1,7 @@
-from typing import Dict, List
-
 from sklearn.base import ClassifierMixin
-from sklearn.ensemble import RandomForestClassifier
+from typing import List, Dict
 from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
 
 
 class Model:
@@ -25,5 +24,4 @@ class RandomForest(Model):
 
 MODELS = [
     NaiveBayes(),
-    RandomForest(),
 ]
