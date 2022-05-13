@@ -18,7 +18,7 @@ def summary_metric_array(metric_array: List):
 def __run_kfolds(clf, folds, X, y, criterion, metrics):
     _metrics = metrics.copy()
 
-    for idx, (train_idx, test_idx) in enumerate(folds):
+    for idx, (train_idx, test_idx) in tqdm(list(enumerate(folds))):
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
 
@@ -64,7 +64,7 @@ def cross_validate(
     best_metrics = None
 
     logger.info(f"Running CV with k={k} for each hyper parameter combinarion...")
-    for param_combination in tqdm(parameters):
+    for param_combination in parameters:
         clf = estimator.model_pipeline
         clf.set_params(**param_combination)
         score, _metrics = __run_kfolds(clf, folds, X, y, criterion, metrics)

@@ -81,5 +81,5 @@ class Estimator:
         )
 
         serialized_metrics_df.to_csv(
-            f"{metrics_folder}/{self.model_name}.csv", index=False
+            f"{metrics_folder}/{self.model_name}-{self.scenario_name}.csv", index=False
         )

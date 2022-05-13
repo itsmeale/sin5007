@@ -1,7 +1,9 @@
 import pandas as pd
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
+from loguru import logger
 from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import MinMaxScaler
@@ -26,7 +28,7 @@ NAIVE_BAYES_PCA = Estimator(
     ),
 )
 
-NAIVE_BAYES_FS = Estimator(
+NAIVE_BAYES_MI = Estimator(
     model_name="naive_bayes",
     scenario_name="ENTROPY",
     is_balanced=False,
@@ -70,11 +72,60 @@ NAIVE_BAYES_SMOTE = Estimator(
     ),
 )
 
+RF = Estimator(
+    model_name="random_forest",
+    scenario_name="NO PREPROCESSING",
+    is_balanced=False,
+    feature_selection=None,
+    param_grid=[{"clf__n_estimators": [100, 200, 1000]}],
+    metrics=METRICS,
+    model_pipeline=Pipeline(
+        steps=[
+            ("clf", RandomForestClassifier()),
+        ]
+    ),
+)
+
+RF_MI = Estimator(
+    model_name="random_forest",
+    scenario_name="ENTROPY",
+    is_balanced=False,
+    feature_selection="MI",
+    param_grid=[{"clf__n_estimators": [100, 200, 1000]}],
+    metrics=METRICS,
+    model_pipeline=Pipeline(
+        steps=[
+            ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
+            ("clf", RandomForestClassifier()),
+        ]
+    ),
+)
+
+
+RF_PCA = Estimator(
+    model_name="random_forest",
+    scenario_name="PCA",
+    is_balanced=False,
+    feature_selection="MI",
+    param_grid=[{"clf__n_estimators": [100, 200, 1000]}],
+    metrics=METRICS,
+    model_pipeline=Pipeline(
+        steps=[
+            ("scaler", MinMaxScaler()),
+            ("pca", PCA(n_components=5)),
+            ("clf", RandomForestClassifier()),
+        ]
+    ),
+)
+
 
 MODELS = [
     NAIVE_BAYES,
+    NAIVE_BAYES_MI,
     NAIVE_BAYES_PCA,
-    NAIVE_BAYES_FS,
+    RF,
+    RF_MI,
+    RF_PCA,
 ]
 
 
@@ -86,8 +137,9 @@ if __name__ == "__main__":
     for model in MODELS:
         model.evaluate(df)
         model.save_metrics(metrics_folder)
+        logger.info("=" * 20)
 
     aggregate_metrics(metrics_folder=metrics_folder, save_to=metrics_file)
     metrics_df = pd.read_csv(metrics_file)
 
-    make_bar_chart_comparision(metrics_df)
+    make_bar_chart_comparision(metrics_df, metric="f1_score")

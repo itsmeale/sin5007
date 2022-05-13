@@ -77,29 +77,57 @@ def plot_class_balance(df, class_column):
     )
 
 
-def make_bar_chart_comparision(metrics_df: pd.DataFrame):
+def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
     # Work in progress
-    fig, ax = plt.subplots(dpi=150)
+    df = metrics_df.copy()
+    df["yerr_lower"] = df[metric] - df[f"{metric}_ci_lower"]
+    df["yerr_upper"] = df[f"{metric}_ci_upper"] - df[metric]
+    models = df["model_name"].unique()
+    scenarios = df["scenario_name"].unique()
 
-    metric = "recall"
+    colors = ["#6A71EB", "#52EB83", "#EB3E3B", "#EBC946"]
 
-    bar_width = 0.2
-    x_positions = np.arange(len(metrics_df))
+    fig, ax = plt.subplots(dpi=150, figsize=(8, 6))
 
-    metrics_nb = metrics_df[metrics_df.model_name == "naive_bayes"]
+    bar_width = 0.1
+    bar_positions = np.arange(len(scenarios))
+    bar_mean_positions = np.zeros(bar_positions.shape)
 
-    plt.bar(
-        [0],
-        metrics_nb["recall"][0],
-        width=bar_width,
-        edgecolor="k",
-        label=metrics_nb["model_name"][0],
-    )
+    for idx, model in enumerate(models):
+        bar_mean_positions = bar_mean_positions + bar_positions
+        _df = df[df.model_name == model]
 
-    plt.errorbar(
-        [0], metrics_nb["recall"][0], capsize=5, yerr=[[0.1], [0.2]], fmt="o", color="k"
-    )
+        plt.bar(
+            bar_positions,
+            _df[metric],
+            width=bar_width,
+            edgecolor="k",
+            color=colors[idx],
+            label=model,
+        )
 
-    plt.legend()
+        plt.errorbar(
+            bar_positions,
+            _df[metric].tolist(),
+            capsize=5,
+            yerr=[_df["yerr_lower"], _df["yerr_upper"]],
+            fmt="o",
+            color="k",
+        )
+        bar_positions = bar_positions + bar_width
 
-    plt.savefig("outputs/model_comparision.png")
+    plt.legend(ncol=2)
+    plt.ylabel(metric)
+    plt.ylim([0, 1.1])
+    plt.title("Comparação entre modelos nos diferentes cenários")
+
+    c_models = len(models)
+
+    if c_models > 1:
+        plt.xticks(bar_mean_positions / c_models, scenarios)
+    else:
+        plt.xticks(bar_positions - bar_width, scenarios)
+
+    plt.savefig("outputs/model_comparision.png", dpi=300)
+
+    return fig

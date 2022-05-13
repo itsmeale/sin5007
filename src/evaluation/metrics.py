@@ -41,7 +41,7 @@ def aggregate_metrics(metrics_folder: str, save_to: str) -> pd.DataFrame:
     dfs = [
         pd.read_csv(metric_file)
         for metric_file in Path(metrics_folder).iterdir()
-        if str(metric_file).endswith("csv")
+        if str(metric_file).endswith("csv") and ("metrics.csv" not in str(metric_file))
     ]
     df = pd.concat(dfs)
     df.to_csv(save_to, index=False)
