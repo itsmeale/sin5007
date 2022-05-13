@@ -40,7 +40,7 @@ class Experiment:
         )
 
         self.scenario.metrics.update(best_metrics)
-        self.best_params = best_params
+        self.scenario.best_params = best_params
         return self
 
     def get_hyperparameters_combinations(self):
