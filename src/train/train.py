@@ -1,10 +1,11 @@
 import pandas as pd
 
 from src.dataviz.plots import make_bar_chart_comparision
-from src.evaluation.metrics import METRICS, aggregate_metrics
+from src.evaluation.metrics import (METRICS, aggregate_metrics,
+                                    clear_results_dir)
 from src.train.experiment import Experiment
-from src.train.scenarios import SCENARIOS
 from src.train.models import MODELS
+from src.train.scenarios import SCENARIOS
 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
@@ -14,6 +15,7 @@ if __name__ == "__main__":
 
     X = df.iloc[:, :-1]
     y = df["pulsar"]
+    clear_results_dir(metrics_folder=metrics_folder)
 
     for scenario in SCENARIOS:
         for model in MODELS:

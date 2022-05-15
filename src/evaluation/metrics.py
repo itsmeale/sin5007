@@ -1,8 +1,10 @@
+import os
 from pathlib import Path
 from typing import Dict
 
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
 
 METRICS: Dict = {
     "recall": {
@@ -46,3 +48,9 @@ def aggregate_metrics(metrics_folder: str, save_to: str) -> pd.DataFrame:
     df = pd.concat(dfs)
     df.to_csv(save_to, index=False)
     return df
+
+
+def clear_results_dir(metrics_folder: str):
+    for metric_file in Path(metrics_folder).iterdir():
+        if str(metric_file).endswith("csv"):
+            os.remove(metric_file)

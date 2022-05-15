@@ -65,6 +65,7 @@ def cross_validate(
         score, _metrics = __run_kfolds(estimator, folds, X, y, criterion, metrics)
 
         if not highest_score or score > highest_score:
+            highest_score = score
             best_params = param_combination
             best_metrics = _metrics
 
