@@ -19,6 +19,13 @@ class Scenario:
     selection_criteria: str = "f1_score"
 
 
+class AllCharacteristicsScenario(Scenario):
+    name = "ALL CHARACTERISTICS"
+    is_balanced = False
+    feature_selection = "ALL CHARACTERISTICS"
+    metrics = METRICS
+    preprocessing_steps = []
+
 class PCAScenario(Scenario):
     name = "PCA"
     is_balanced = False
@@ -47,16 +54,10 @@ class SmartCorrelated(Scenario):
         ("fs", SmartCorrelatedSelection(selection_method="variance")),
     ]    
 
-class NoPrepScenario(Scenario):
-    name = "NO PREPROCESSING"
-    is_balanced = False
-    feature_selection = "NO PREPROCESSING"
-    metrics = METRICS
-    preprocessing_steps = []
 
 
 SCENARIOS = [
-    NoPrepScenario(),
+    AllCharacteristicsScenario(),
     PCAScenario(),
     MIScenario(),
     SmartCorrelated(),

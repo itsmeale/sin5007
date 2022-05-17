@@ -16,7 +16,6 @@ class NaiveBayes(Model):
     classifier = GaussianNB()
     param_grid = [{"clf__var_smoothing": [1e-9, 1e-5]}]
 
-
 class RandomForest(Model):
     name = "Random Forest"
     classifier = RandomForestClassifier()
