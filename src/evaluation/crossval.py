@@ -14,8 +14,11 @@ def summary_metric_array(metric_array: List):
     return mean, ci
 
 
-def __run_kfolds(clf, folds, X, y, criterion, metrics):
+def __run_kfolds(clf, k, X, y, criterion, metrics):
     _metrics = metrics.copy()
+
+    kfold = StratifiedKFold(n_splits=k)
+    folds = kfold.split(X, y)
 
     for (train_idx, test_idx) in tqdm(list(folds)):
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
@@ -52,9 +55,6 @@ def cross_validate(
 ):
     logger.info(f"Starting cross validation...")
 
-    kfold = StratifiedKFold(n_splits=k)
-    folds = kfold.split(X, y)
-
     best_params = None
     highest_score = None
     best_metrics = None
@@ -62,7 +62,8 @@ def cross_validate(
     logger.info(f"Running CV with k={k} for each hyper parameter combinarion...")
     for param_combination in parameters:
         estimator.set_params(**param_combination)
-        score, _metrics = __run_kfolds(estimator, folds, X, y, criterion, metrics)
+        logger.info(f"Running params: {param_combination}")
+        score, _metrics = __run_kfolds(estimator, k, X, y, criterion, metrics)
 
         if not highest_score or score > highest_score:
             highest_score = score

@@ -1,7 +1,8 @@
 from typing import Dict
 
-from imblearn.pipeline import Pipeline
 from feature_engine.selection import SmartCorrelatedSelection
+from imblearn.combine import SMOTETomek
+from imblearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 from sklearn.preprocessing import MinMaxScaler
@@ -26,6 +27,7 @@ class AllCharacteristicsScenario(Scenario):
     metrics = METRICS
     preprocessing_steps = []
 
+
 class PCAScenario(Scenario):
     name = "PCA"
     is_balanced = False
@@ -36,6 +38,7 @@ class PCAScenario(Scenario):
         ("pca", PCA(n_components=5)),
     ]
 
+
 class MIScenario(Scenario):
     name = "Percentile"
     is_balanced = False
@@ -45,6 +48,7 @@ class MIScenario(Scenario):
         ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
     ]
 
+
 class SmartCorrelated(Scenario):
     name = "Smart Correlated"
     is_balanced = False
@@ -52,13 +56,30 @@ class SmartCorrelated(Scenario):
     metrics = METRICS
     preprocessing_steps = [
         ("fs", SmartCorrelatedSelection(selection_method="variance")),
-    ]    
+    ]
 
+
+_SCENARIOS = [
+    AllCharacteristicsScenario,
+    PCAScenario,
+    MIScenario,
+    SmartCorrelated,
+]
+
+_BALANCED_SCENARIOS = list()
+
+for _scenario in _SCENARIOS:
+    _scenario = _scenario()
+    _scenario.is_balanced = True
+    _scenario.name = f"{_scenario.name}\n(Balanced)"
+    _scenario.preprocessing_steps = [
+        ("smt", SMOTETomek(random_state=0)),
+        *_scenario.preprocessing_steps,
+    ]
+    _BALANCED_SCENARIOS.append(_scenario)
 
 
 SCENARIOS = [
-    AllCharacteristicsScenario(),
-    PCAScenario(),
-    MIScenario(),
-    SmartCorrelated(),
+    *[_scenario() for _scenario in _SCENARIOS],
+    *_BALANCED_SCENARIOS,
 ]

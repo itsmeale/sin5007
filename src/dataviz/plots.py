@@ -80,6 +80,8 @@ def plot_class_balance(df, class_column):
 def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
     # Work in progress
     df = metrics_df.copy()
+    df.sort_values(by=["scenario_name"], inplace=True)
+
     df["yerr_lower"] = df[metric] - df[f"{metric}_ci_lower"]
     df["yerr_upper"] = df[f"{metric}_ci_upper"] - df[metric]
     models = df["model_name"].unique()
@@ -122,11 +124,20 @@ def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
     plt.title("Comparação entre modelos nos diferentes cenários")
 
     c_models = len(models)
+    fontsize = 7
+    rotation = 20
 
     if c_models > 1:
-        plt.xticks(bar_mean_positions / c_models, scenarios)
+        plt.xticks(
+            bar_mean_positions / c_models,
+            scenarios,
+            rotation=rotation,
+            fontsize=fontsize,
+        )
     else:
-        plt.xticks(bar_positions - bar_width, scenarios)
+        plt.xticks(
+            bar_positions - bar_width, scenarios, rotation=rotation, fontsize=fontsize
+        )
 
     plt.savefig(f"outputs/model_comparision-{metric}.png", dpi=300)
 

@@ -4,6 +4,7 @@ from itertools import product
 import pandas as pd
 from imblearn.pipeline import Pipeline
 from loguru import logger
+from slugify import slugify
 
 from src.evaluation.crossval import cross_validate
 from src.train.models import Model
@@ -84,19 +85,19 @@ class Experiment:
             }
         )
 
-        serialized_metrics_df.to_csv(
-            f"{metrics_folder}/{self.model.name}-{self.scenario.name}.csv", index=False
-        )
+        file_name = slugify(f"{self.model.name} {self.scenario.name}")
+
+        serialized_metrics_df.to_csv(f"{metrics_folder}/{file_name}.csv", index=False)
         return self
 
 
 if __name__ == "__main__":
+    from src.train.models import RandomForest
     from src.train.scenarios import PCAScenario
-    from train.models import NaiveBayes
 
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
     X = df.iloc[:, :-1]
     y = df["pulsar"]
 
-    experiment = Experiment(scenario=PCAScenario(), model=NaiveBayes())
+    experiment = Experiment(scenario=PCAScenario(), model=RandomForest())
     experiment.run(X, y).save_metrics(metrics_folder="data/results")
