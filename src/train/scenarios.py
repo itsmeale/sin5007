@@ -1,6 +1,7 @@
 from typing import Dict
 
 from imblearn.pipeline import Pipeline
+from feature_engine.selection import SmartCorrelatedSelection
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 from sklearn.preprocessing import MinMaxScaler
@@ -21,28 +22,35 @@ class Scenario:
 class PCAScenario(Scenario):
     name = "PCA"
     is_balanced = False
-    feature_selection = None
+    feature_selection = "PCA"
     metrics = METRICS
     preprocessing_steps = [
         ("scaler", MinMaxScaler()),
         ("pca", PCA(n_components=5)),
     ]
 
-
 class MIScenario(Scenario):
-    name = "MI"
+    name = "Percentile"
     is_balanced = False
-    feature_selection = "Mutual Information"
+    feature_selection = "Select Percentile"
     metrics = METRICS
     preprocessing_steps = [
         ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
     ]
 
+class SmartCorrelated(Scenario):
+    name = "Smart Correlated"
+    is_balanced = False
+    feature_selection = "Smart Correlated"
+    metrics = METRICS
+    preprocessing_steps = [
+        ("fs", SmartCorrelatedSelection(selection_method="variance")),
+    ]    
 
 class NoPrepScenario(Scenario):
     name = "NO PREPROCESSING"
     is_balanced = False
-    feature_selection = None
+    feature_selection = "NO PREPROCESSING"
     metrics = METRICS
     preprocessing_steps = []
 
@@ -51,4 +59,5 @@ SCENARIOS = [
     NoPrepScenario(),
     PCAScenario(),
     MIScenario(),
+    SmartCorrelated(),
 ]
