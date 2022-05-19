@@ -20,7 +20,7 @@ def __run_kfolds(clf, k, X, y, criterion, metrics):
     kfold = StratifiedKFold(n_splits=k)
     folds = kfold.split(X, y)
 
-    for (train_idx, test_idx) in tqdm(list(folds)):
+    for (train_idx, test_idx) in folds:
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
 

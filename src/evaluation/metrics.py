@@ -40,17 +40,17 @@ METRICS: Dict = {
 
 def aggregate_metrics(metrics_folder: str, save_to: str) -> pd.DataFrame:
     """Aggregate all metrics csvs in a single dataframe"""
+    files = list()
+    for root, _, metric_files in os.walk(metrics_folder):
+        for metric_file in metric_files:
+            files.append(f"{root}/{metric_file}")
+
     dfs = [
-        pd.read_csv(metric_file)
-        for metric_file in Path(metrics_folder).iterdir()
-        if str(metric_file).endswith("csv") and ("metrics.csv" not in str(metric_file))
+        pd.read_csv(file)
+        for file in files
+        if str(file).endswith("csv") and ("metrics.csv" not in str(file))
     ]
+
     df = pd.concat(dfs)
     df.to_csv(save_to, index=False)
     return df
-
-
-def clear_results_dir(metrics_folder: str):
-    for metric_file in Path(metrics_folder).iterdir():
-        if str(metric_file).endswith("csv"):
-            os.remove(metric_file)

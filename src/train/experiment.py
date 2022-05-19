@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from itertools import product
+from pathlib import Path
 
 import pandas as pd
 from imblearn.pipeline import Pipeline
 from loguru import logger
+from sklearn import metrics
 from slugify import slugify
 
 from src.evaluation.crossval import cross_validate
@@ -54,6 +56,11 @@ class Experiment:
 
         return parameter_combinations
 
+    def __create_parent_results_dir(self, metrics_folder):
+        path = Path(f"{metrics_folder}/{slugify(self.model.name)}")
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
     def save_metrics(self, metrics_folder: str):
         """Serialize metrics and estimator parameters to csv"""
         logger.info(f"Saving metrics for model {self.model.name}...")
@@ -86,18 +93,19 @@ class Experiment:
         )
 
         file_name = slugify(f"{self.model.name} {self.scenario.name}")
+        output_folder = self.__create_parent_results_dir(metrics_folder=metrics_folder)
 
-        serialized_metrics_df.to_csv(f"{metrics_folder}/{file_name}.csv", index=False)
+        serialized_metrics_df.to_csv(f"{output_folder}/{file_name}.csv", index=False)
         return self
 
 
 if __name__ == "__main__":
-    from src.train.models import RandomForest
+    from src.train.models import NaiveBayes
     from src.train.scenarios import PCAScenario
 
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
     X = df.iloc[:, :-1]
     y = df["pulsar"]
 
-    experiment = Experiment(scenario=PCAScenario(), model=RandomForest())
+    experiment = Experiment(scenario=PCAScenario(), model=NaiveBayes())
     experiment.run(X, y).save_metrics(metrics_folder="data/results")
