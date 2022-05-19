@@ -1,0 +1,3 @@
+model_name,scenario_name,is_balanced,feature_selection,param_grid,best_params,accuracy,accuracy_ci_lower,accuracy_ci_upper,precision,precision_ci_lower,precision_ci_upper,recall,recall_ci_lower,recall_ci_upper,f1_score,f1_score_ci_lower,f1_score_ci_upper
+Naive Bayes,"Smart Correlated
+(Balanced)",True,Smart Correlated,"[{'clf__var_smoothing': [1e-09, 1e-05, 0.001, 0.01, 0.1]}]",{'clf__var_smoothing': 0.1},0.9258744048445096,0.9209638382728119,0.9307849714162072,0.5963631254071305,0.577516588778036,0.6152096620362255,0.808473532193339,0.7930505503531082,0.8238965140335699,0.6742171485133508,0.6612735103466052,0.6871607866800964

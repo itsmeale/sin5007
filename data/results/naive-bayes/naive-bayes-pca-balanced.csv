@@ -1,0 +1,3 @@
+model_name,scenario_name,is_balanced,feature_selection,param_grid,best_params,accuracy,accuracy_ci_lower,accuracy_ci_upper,precision,precision_ci_lower,precision_ci_upper,recall,recall_ci_lower,recall_ci_upper,f1_score,f1_score_ci_lower,f1_score_ci_upper
+Naive Bayes,"PCA
+(Balanced)",True,PCA,"[{'clf__var_smoothing': [1e-09, 1e-05, 0.001, 0.01, 0.1]}]",{'clf__var_smoothing': 0.1},0.9269517206301188,0.9209974471594163,0.9329059941008216,0.6054109689524022,0.5816079535330271,0.6292139843717773,0.7834613909976228,0.7627955824546265,0.8041271995406188,0.6698948873275559,0.6536994763484494,0.6860902983066623
