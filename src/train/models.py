@@ -23,20 +23,19 @@ class SVM(Model):
     param_grid: List[Dict] = [
         {
             "clf__kernel": ["linear"],
-            "clf__C": [1, 0.5],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
             "clf__class_weight": [None, "balanced"],
         },
         {
-            "clf__kernel": ["poly"],
-            "clf__C": [1, 0.5],
-            "clf__degree": [1, 2, 3, 4],
-            "clf__gamma": [1, 1.5, 1e-1, 1e-2],
+            "clf__kernel": ["sigmoid"],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
+            "clf__gamma": [1e-2, 1e-1, 1, 1e2, 1e3],
             "clf__class_weight": [None, "balanced"],
         },
         {
             "clf__kernel": ["rbf"],
-            "clf__C": [1, 0.5],
-            "clf__gamma": [1, 1.5, 1e-1, 1e-2],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
+            "clf__gamma": [1e-2, 1e-1, 1, 1e2, 1e3],
             "clf__class_weight": [None, "balanced"],
         },
     ]

@@ -100,12 +100,12 @@ class Experiment:
 
 
 if __name__ == "__main__":
-    from src.train.models import NaiveBayes
+    from src.train.models import SVM
     from src.train.scenarios import PCAScenario
 
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
     X = df.iloc[:, :-1]
     y = df["pulsar"]
 
-    experiment = Experiment(scenario=PCAScenario(), model=NaiveBayes())
+    experiment = Experiment(scenario=PCAScenario(), model=SVM())
     experiment.run(X, y).save_metrics(metrics_folder="data/results")
