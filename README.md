@@ -4,6 +4,26 @@
 ![Link para apresentação](assets/presentation/presentation.png)
 
 
+## Estrutura do repositório
+```
+├── data
+│   ├── preprocessed            -- Dados intermediários (pre-processados)
+│   ├── results                 -- Resultados
+│   └── raw                     -- Dados brutos
+├── docs                        -- Documentações do projeto e datasets
+├── notebooks                   -- Experimentos em jupyter notebooks
+├── outputs                     -- Visualizações de dados
+├── src                         -- Scripts utilizados
+│   ├── dataviz                 -- Scripts de visualização de dados
+│   ├── evaluation              -- Validação cruzada e métricas
+│   ├── features                -- Remoção de outliers e train test split
+│   ├── train                   -- Treinamento de modelos
+│   └── toolbox                 -- Funções auxiliares
+├── README.md
+├── requirements.txt            -- Bibliotecas necessárias
+└── setup.py                    -- Arquivo de configuração do python
+```
+
 ## Como contribuir
 
 ### Linux
@@ -13,5 +33,6 @@ $ . venv/bin/activate
 $ pip install -r requirements
 ```
 
-### Windows
-[WIP]
+## Contributors
+
+@cabertoldi @igabid @ngalindojr @itsmeale
