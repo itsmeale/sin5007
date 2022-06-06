@@ -31,8 +31,7 @@ _svm_metrics = pd.concat(
 
 (
     _svm_metrics
+    .sort_values(by=["scenario_name"])
     .style
     .highlight_max(subset=["accuracy", "precision", "recall", "f1_score"], color="#8F8")
 )
-
-
