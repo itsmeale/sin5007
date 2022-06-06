@@ -25,7 +25,9 @@ class AllCharacteristicsScenario(Scenario):
     is_balanced = False
     feature_selection = "ALL CHARACTERISTICS"
     metrics = METRICS
-    preprocessing_steps = []
+    preprocessing_steps = [
+        ("scaler", MinMaxScaler()),
+    ]
 
 
 class PCAScenario(Scenario):
@@ -45,6 +47,7 @@ class MIScenario(Scenario):
     feature_selection = "Select Percentile"
     metrics = METRICS
     preprocessing_steps = [
+        ("scaler", MinMaxScaler()),
         ("fs", SelectPercentile(score_func=mutual_info_classif, percentile=80)),
     ]
 
@@ -55,6 +58,7 @@ class SmartCorrelated(Scenario):
     feature_selection = "Smart Correlated"
     metrics = METRICS
     preprocessing_steps = [
+        ("scaler", MinMaxScaler()),
         ("fs", SmartCorrelatedSelection(selection_method="variance")),
     ]
 

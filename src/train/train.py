@@ -1,4 +1,5 @@
 import os
+import warnings
 from functools import partial
 from multiprocessing import Pool
 from pathlib import Path
@@ -18,7 +19,7 @@ def run_experiment(experiment: Experiment, X, y, metrics_folder):
     experiment.run(X, y).save_metrics(metrics_folder=metrics_folder)
 
 
-if __name__ == "__main__":
+def main():
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
     metrics_folder = "data/results"
     metrics_file = Path("data/results/metrics.csv")
@@ -45,3 +46,9 @@ if __name__ == "__main__":
 
     for metric in metrics:
         make_bar_chart_comparision(metrics_df, metric=metric)
+
+
+if __name__ == "__main__":
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        main()

@@ -91,7 +91,7 @@ def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
 
     fig, ax = plt.subplots(dpi=150, figsize=(8, 6))
 
-    bar_width = 0.1
+    bar_width = 0.25
     bar_positions = np.arange(len(scenarios))
     bar_mean_positions = np.zeros(bar_positions.shape)
 
@@ -108,14 +108,26 @@ def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
             label=model,
         )
 
-        plt.errorbar(
-            bar_positions,
-            _df[metric].tolist(),
-            capsize=5,
-            yerr=[_df["yerr_lower"], _df["yerr_upper"]],
-            fmt="o",
-            color="k",
-        )
+        if idx >= 1:
+            plt.errorbar(
+                bar_positions,
+                _df[metric].tolist(),
+                capsize=2,
+                yerr=[_df["yerr_lower"], _df["yerr_upper"]],
+                fmt="o",
+                color="k",
+            )
+        else:
+            plt.errorbar(
+                bar_positions,
+                _df[metric].tolist(),
+                capsize=2,
+                yerr=[_df["yerr_lower"], _df["yerr_upper"]],
+                fmt="o",
+                color="k",
+                label="Interv. Confiança: 95%",
+            )
+
         bar_positions = bar_positions + bar_width
 
     plt.legend(ncol=2)
