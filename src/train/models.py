@@ -3,6 +3,7 @@ from typing import Dict, List
 from sklearn.base import ClassifierMixin
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 
 
 class Model:
@@ -44,6 +45,18 @@ class SVM(Model):
     ]
 
 
+class MLP(Model):
+    name = "MLP"
+    classifier = MLPClassifier(random_state=0, max_iter=200, early_stopping=True)
+    param_grid: List[Dict] = [
+        {
+            "clf__hidden_layer_sizes": [(10,), (10, 10), (10, 10, 10)],
+            "clf__activation": ["identity", "logistic", "tanh", "relu"],
+            "clf__solver": ["adam"],
+        }
+    ]
+
+
 MODELS = [
-    SVM(),
+    MLP(),
 ]

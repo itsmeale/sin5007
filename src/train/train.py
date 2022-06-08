@@ -12,7 +12,7 @@ from src.train.experiment import Experiment
 from src.train.models import MODELS
 from src.train.scenarios import SCENARIOS
 
-PARALLEL_JOBS = 9
+PARALLEL_JOBS = 2
 
 
 def run_experiment(experiment: Experiment, X, y, metrics_folder):
