@@ -19,25 +19,27 @@ class NaiveBayes(Model):
 
 class SVM(Model):
     name = "SVM"
-    classifier = SVC(random_state=0)
+    classifier = SVC(random_state=0, max_iter=50000)
     param_grid: List[Dict] = [
         {
             "clf__kernel": ["linear"],
-            "clf__C": [1, 0.5],
-            "clf__class_weight": [None, "balanced"],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
         },
         {
-            "clf__kernel": ["poly"],
-            "clf__C": [1, 0.5],
-            "clf__degree": [1, 2, 3, 4],
-            "clf__gamma": [1, 1.5, 1e-1, 1e-2],
-            "clf__class_weight": [None, "balanced"],
+            "clf__kernel": ["sigmoid"],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
+            "clf__gamma": [1e-2, 1e-1, 1, 1e2, 1e3],
         },
         {
             "clf__kernel": ["rbf"],
-            "clf__C": [1, 0.5],
-            "clf__gamma": [1, 1.5, 1e-1, 1e-2],
-            "clf__class_weight": [None, "balanced"],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
+            "clf__gamma": [1e-2, 1e-1, 1, 1e2, 1e3],
+        },
+        {
+            "clf__kernel": ["poly"],
+            "clf__C": [1e-1, 1, 1e1, 1e2],
+            "clf__degree": [1, 2, 3],
+            "clf__gamma": [1e-2, 1e-1, 1, 1e2, 1e3],
         },
     ]
 

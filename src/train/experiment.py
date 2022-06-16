@@ -40,6 +40,7 @@ class Experiment:
             metrics=self.scenario.metrics,
             criterion=self.scenario.selection_criteria,  # to choose the best model
             parameters=self.get_hyperparameters_combinations(),
+            experiment=self,
         )
 
         self.scenario.metrics.update(best_metrics)
@@ -100,12 +101,12 @@ class Experiment:
 
 
 if __name__ == "__main__":
-    from src.train.models import NaiveBayes
+    from src.train.models import SVM, NaiveBayes
     from src.train.scenarios import PCAScenario
 
     df = pd.read_csv("data/preprocessed/HTRU_2_outliers_removed.csv")
     X = df.iloc[:, :-1]
     y = df["pulsar"]
 
-    experiment = Experiment(scenario=PCAScenario(), model=NaiveBayes())
+    experiment = Experiment(scenario=PCAScenario(), model=SVM())
     experiment.run(X, y).save_metrics(metrics_folder="data/results")
