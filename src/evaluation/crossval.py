@@ -2,14 +2,13 @@ import json
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List
-from uuid import uuid4
 
 import numpy as np
 import statsmodels.stats.api as stats
+from imblearn.pipeline import Pipeline
 from loguru import logger
 from sklearn.model_selection import StratifiedKFold
 from slugify import slugify
-from tqdm import tqdm
 
 
 def summary_metric_array(metric_array: List):
@@ -19,7 +18,7 @@ def summary_metric_array(metric_array: List):
     return mean, ci
 
 
-def __run_kfolds(clf, k, X, y, criterion, metrics):
+def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
     _metrics = deepcopy(metrics)
 
     kfold = StratifiedKFold(n_splits=k)
@@ -28,6 +27,15 @@ def __run_kfolds(clf, k, X, y, criterion, metrics):
     for (train_idx, test_idx) in folds:
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
+
+        clf = Pipeline(
+            steps=[
+                *scenario.preprocessing_steps,
+                ("clf", model.classifier(**model.fixed_params)),
+            ]
+        )
+
+        clf.set_params(**params)
 
         # ajuste e predicoes
         clf.fit(X_train, y_train)
@@ -78,7 +86,8 @@ def __save_partial_results(experiment, params: Dict, metrics: Dict, idx):
 def cross_validate(
     X,
     y,
-    estimator,
+    scenario,
+    model,
     k: int,
     metrics: Dict,
     criterion: str,
@@ -94,8 +103,9 @@ def cross_validate(
 
     logger.info(f"Running CV with k={k} for each hyper parameter combinarion...")
     for idx, param_combination in enumerate(parameters):
-        estimator.set_params(**param_combination)
-        score, _metrics = __run_kfolds(estimator, k, X, y, criterion, metrics)
+        score, _metrics = __run_kfolds(
+            scenario, model, param_combination, k, X, y, criterion, metrics
+        )
 
         if save_partial:
             __save_partial_results(experiment, param_combination, _metrics, idx)
