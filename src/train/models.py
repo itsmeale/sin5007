@@ -84,8 +84,7 @@ class RandomForest(Model):
             "clf__n_estimators": [157, 500, 1000],
             "clf__criterion": ["gini", "entropy"],
             "clf__max_depth": [2e1, 2e2, 2e3],
-            "clf__max_features": [int(math.sqrt(8)), 3, 5, 8],
-            "clf__class_weight": [None, "balanced"],
+            "clf__max_features": [int(math.sqrt(8)), 5, 8],
         }
     ]
 
