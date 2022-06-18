@@ -29,7 +29,7 @@ X = df.drop("pulsar", axis=1).values
 
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import MinMaxScaler, RobustScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import f1_score
@@ -84,10 +84,10 @@ pipe_opt
 
 # ## Teste de hipótese
 
-from scipy.stats import ttest_rel
+from scipy.stats import ttest_ind
 
 # +
-p = ttest_rel(svc_opt_scores, svc_gs_scores).pvalue
+p = ttest_ind(svc_opt_scores, svc_gs_scores).pvalue
 
 if p <= .05:
     print("A melhoria é significativa.")

@@ -24,6 +24,11 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
     kfold = StratifiedKFold(n_splits=k)
     folds = kfold.split(X, y)
 
+    n_features = X.shape[1]
+    max_features_param = "clf__max_features"
+    if max_features_param in params.keys():
+        params[max_features_param] = min(n_features, params[max_features_param])
+
     for (train_idx, test_idx) in folds:
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
@@ -115,10 +120,6 @@ def cross_validate(
             highest_score = score
             best_params = param_combination
             best_metrics = _metrics
-
-        logger.info(
-            f"Run for params: {param_combination} - {_metrics['f1_score']['mean']}"
-        )
 
     logger.info(f"Best hyper parameters founded...")
     return best_params, best_metrics
