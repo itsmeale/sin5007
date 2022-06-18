@@ -54,6 +54,7 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
         _metrics[metric]["ci_upper"] = ci_upper
 
     score = _metrics[criterion]["mean"]
+    logger.info(f"{model.name}: {score}")
     return score, _metrics
 
 

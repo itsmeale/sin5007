@@ -1,9 +1,11 @@
 from typing import Dict, List
 
+import math
 from sklearn.base import ClassifierMixin
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 
 
 class Model:
@@ -73,6 +75,22 @@ class MLP(Model):
     ]
 
 
+class RandomForest(Model):
+    name = "RandomForest"
+    classifier = RandomForestClassifier
+    fixed_params = {
+        "n_jobs": -1
+    }
+    param_grid: List[Dict] = [
+        {
+            "clf__n_estimators": [500, 1000, 100, 157],
+            "clf__criterion": ["gini", "entropy"],
+            "clf__max_depth": [int(math.sqrt(8)), 1e1, 2e2, 1e3],
+            "clf__max_features": [int(math.sqrt(8)), 2, 3, 5, 8]
+        }
+    ]
+
+
 MODELS = [
-    MLP(),
+    RandomForest(),
 ]

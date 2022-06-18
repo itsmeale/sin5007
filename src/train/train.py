@@ -38,8 +38,11 @@ def main():
         for model in MODELS:
             experiments.append(Experiment(scenario=scenario, model=model))
 
-    with Pool(processes=PARALLEL_JOBS) as p:
-        p.map(_run_experiment, experiments)
+    # with Pool(processes=PARALLEL_JOBS) as p:
+    #     p.map(_run_experiment, experiments)
+
+    for experiment in experiments:
+        _run_experiment(experiment)
 
     aggregate_metrics(metrics_folder=metrics_folder, save_to=metrics_file)
     metrics_df = pd.read_csv(metrics_file)
