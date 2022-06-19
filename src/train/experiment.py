@@ -37,7 +37,6 @@ class Experiment:
             metrics=self.scenario.metrics,
             criterion=self.scenario.selection_criteria,  # to choose the best model
             parameters=self.get_hyperparameters_combinations(),
-            experiment=self,
         )
 
         self.scenario.metrics.update(best_metrics)

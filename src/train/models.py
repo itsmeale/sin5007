@@ -1,6 +1,7 @@
 import math
 from typing import Dict, List
 
+from pytorch_tabnet.tab_model import TabNetClassifier
 from sklearn.base import ClassifierMixin
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -89,6 +90,23 @@ class RandomForest(Model):
     ]
 
 
+class TabNet(Model):
+    name = "TabNet"
+    classifier = TabNetClassifier
+    fixed_params: Dict = {
+        "n_d": 11,
+        "n_a": 9,
+        "n_steps": 9,
+        "gamma": 1.092671059464805,
+        "optimizer_params": {"lr": 0.002113695480252209},
+    }
+    param_grid: List[Dict] = [{}]
+    fit_params: Dict = {
+        "clf__batch_size": 2048,
+        "clf__max_epochs": 500,
+    }
+
+
 MODELS = [
-    RandomForest(),
+    TabNet(),
 ]
