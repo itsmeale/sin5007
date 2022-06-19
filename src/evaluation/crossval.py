@@ -9,6 +9,7 @@ from imblearn.pipeline import Pipeline
 from loguru import logger
 from sklearn.model_selection import StratifiedKFold
 from slugify import slugify
+from src.train.scenarios import SmartCorrelated, MIScenario, PCAScenario
 
 
 def summary_metric_array(metric_array: List):
@@ -24,10 +25,9 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
     kfold = StratifiedKFold(n_splits=k)
     folds = kfold.split(X, y)
 
-    n_features = X.shape[1]
     max_features_param = "clf__max_features"
-    if max_features_param in params.keys():
-        params[max_features_param] = min(n_features, params[max_features_param])
+    if scenario.name in {SmartCorrelated.name, MIScenario.name, PCAScenario.name}:
+        params[max_features_param] = min(5, params[max_features_param])
 
     for (train_idx, test_idx) in folds:
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
