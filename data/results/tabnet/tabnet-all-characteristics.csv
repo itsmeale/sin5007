@@ -1,0 +1,2 @@
+model_name,scenario_name,is_balanced,feature_selection,param_grid,best_params,accuracy,accuracy_ci_lower,accuracy_ci_upper,precision,precision_ci_lower,precision_ci_upper,recall,recall_ci_lower,recall_ci_upper,f1_score,f1_score_ci_lower,f1_score_ci_upper
+TabNet,ALL CHARACTERISTICS,False,ALL CHARACTERISTICS,[{}],{},0.9791863531095351,0.9761509891528869,0.9822217170661834,0.9242409407766887,0.9050452452678331,0.9434366362855443,0.8412775093934515,0.8050815190458332,0.8774734997410695,0.8797211988611696,0.8602248963751831,0.8992175013471562

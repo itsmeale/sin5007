@@ -13,24 +13,24 @@
 #     name: python3
 # ---
 
-# # MLP
+# # NB
 
 import pandas as pd
 
 df = pd.read_csv("../data/results/metrics.csv")
 
-model_metrics = df[df.model_name == "MLP"]
+svm_metrics = df[df.model_name == "Naive Bayes"]
 
-_model_metrics = pd.concat(
+_svm_metrics = pd.concat(
     [
-        model_metrics[["scenario_name", "accuracy", "precision", "recall", "f1_score"]],
-        model_metrics["best_params"].map(eval).apply(pd.Series)
+        svm_metrics[["scenario_name", "accuracy", "precision", "recall", "f1_score"]],
+        svm_metrics["best_params"].map(eval).apply(pd.Series)
     ],
     axis=1
 )
 
 (
-    _model_metrics
+    _svm_metrics
     .sort_values(by=["scenario_name"])
     .style
     .highlight_max(subset=["accuracy", "precision", "recall", "f1_score"], color="#8F8")

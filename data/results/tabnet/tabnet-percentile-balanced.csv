@@ -1,0 +1,3 @@
+model_name,scenario_name,is_balanced,feature_selection,param_grid,best_params,accuracy,accuracy_ci_lower,accuracy_ci_upper,precision,precision_ci_lower,precision_ci_upper,recall,recall_ci_lower,recall_ci_upper,f1_score,f1_score_ci_lower,f1_score_ci_upper
+TabNet,"Percentile
+(Balanced)",True,Select Percentile,[{}],{},0.9594074990758885,0.9557362606026988,0.9630787375490782,0.7242773778246383,0.7015455063600023,0.7470092492892743,0.910925798123866,0.8996885553318842,0.9221630409158473,0.8049492939545674,0.7914958277414219,0.8184027601677129

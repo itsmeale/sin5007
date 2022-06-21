@@ -13,13 +13,13 @@
 #     name: python3
 # ---
 
-# # SVM
+# # RF
 
 import pandas as pd
 
 df = pd.read_csv("../data/results/metrics.csv")
 
-model_metrics = df[df.model_name == "MLP"]
+model_metrics = df[df.model_name == "RandomForest"]
 
 _model_metrics = pd.concat(
     [
