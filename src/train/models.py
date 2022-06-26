@@ -108,5 +108,5 @@ class TabNet(Model):
 
 
 MODELS = [
-    TabNet(),
+    MLP(),
 ]
