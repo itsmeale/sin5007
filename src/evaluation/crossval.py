@@ -3,9 +3,13 @@ from typing import Dict, List
 
 import numpy as np
 import statsmodels.stats.api as stats
-from imblearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline
+from imblearn.combine import SMOTETomek
 from loguru import logger
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from feature_engine.selection import SmartCorrelatedSelection
 
 
 def summary_metric_array(metric_array: List):
@@ -27,11 +31,19 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
 
     for (train_idx, test_idx) in folds:
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
-        y_train, y_test = y[train_idx], y[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]        
+
+        preprocessor = Pipeline(steps=[
+            ("scaler", MinMaxScaler()),
+            ("fs", SmartCorrelatedSelection(selection_method="variance")),
+        ])
+        X_train = preprocessor.fit_transform(X_train)
+
+        smote = SMOTETomek()
+        X_train, y_train = smote.fit_resample(X_train, y_train)
 
         clf = Pipeline(
             steps=[
-                *scenario.preprocessing_steps,
                 ("clf", model.classifier(**model.fixed_params)),
             ]
         )
@@ -44,7 +56,7 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
             y_train.values,
             **model.fit_params,
         )
-        y_pred = clf.predict(X_test.values)
+        y_pred = clf.predict(preprocessor.transform(X_test).values)
 
         # calcula metricas
         for metric in metrics.keys():

@@ -103,7 +103,7 @@ class TabNet(Model):
     param_grid: List[Dict] = [{}]
     fit_params: Dict = {
         "clf__batch_size": 2048,
-        "clf__max_epochs": 500,
+        "clf__max_epochs": 200,
     }
 
 

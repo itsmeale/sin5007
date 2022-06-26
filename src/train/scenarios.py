@@ -69,9 +69,9 @@ class SmartCorrelated(Scenario):
 
 
 _SCENARIOS = [
-    AllCharacteristicsScenario,
-    PCAScenario,
-    MIScenario,
+    #AllCharacteristicsScenario,
+    #PCAScenario,
+    #MIScenario,
     SmartCorrelated,
 ]
 
@@ -89,6 +89,6 @@ for _scenario in _SCENARIOS:
 
 
 SCENARIOS = [
-    *[_scenario() for _scenario in _SCENARIOS],
+    # *[_scenario() for _scenario in _SCENARIOS],
     *_BALANCED_SCENARIOS,
 ]
