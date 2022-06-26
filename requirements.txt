@@ -114,6 +114,7 @@ six==1.16.0
 sniffio==1.2.0
 soupsieve==2.3.2.post1
 SQLAlchemy==1.4.37
+-e git+ssh://git@github.com/itsmeale/sin5007.git@978b43e00d11ee81433aafa43c5830f338563c6d#egg=src
 stack-data==0.2.0
 statsmodels==0.13.2
 stevedore==3.5.0
