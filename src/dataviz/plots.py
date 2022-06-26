@@ -5,6 +5,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib.ticker import MultipleLocator
+
+plt.style.use("default")
+plt.rcParams["xtick.major.size"] = 5.0
+plt.rcParams["xtick.minor.size"] = 3.0
+plt.rcParams["ytick.major.size"] = 5.0
+plt.rcParams["ytick.minor.size"] = 3.0
+plt.rcParams["axes.linewidth"] = 2.5
+plt.rcParams["xtick.direction"] = "out"
+plt.rcParams["ytick.direction"] = "in"
 
 PULSAR_COLOR: str = "#805BFF"
 NOISE_COLOR: str = "#B6B2B8"
@@ -77,23 +87,30 @@ def plot_class_balance(df, class_column):
     )
 
 
-def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
+def make_bar_chart_comparision(
+    metrics_df: pd.DataFrame,
+    metric: str,
+    compare_models: List,
+):
     # Work in progress
     df = metrics_df.copy()
     df.sort_values(by=["scenario_name"], inplace=True)
+    print(metric)
 
     df["yerr_lower"] = df[metric] - df[f"{metric}_ci_lower"]
     df["yerr_upper"] = df[f"{metric}_ci_upper"] - df[metric]
-    models = df["model_name"].unique()
+    models = compare_models
     scenarios = df["scenario_name"].unique()
 
     colors = ["#6A71EB", "#52EB83", "#EB3E3B", "#EBC946"]
 
-    fig, ax = plt.subplots(dpi=150, figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    bar_width = 0.25
-    bar_positions = np.arange(len(scenarios))
+    bar_width = 0.3
+    bar_positions = np.arange(len(scenarios)) * 1.6
     bar_mean_positions = np.zeros(bar_positions.shape)
+
+    ax.yaxis.set_minor_locator(MultipleLocator(0.1))
 
     for idx, model in enumerate(models):
         bar_mean_positions = bar_mean_positions + bar_positions
@@ -125,15 +142,16 @@ def make_bar_chart_comparision(metrics_df: pd.DataFrame, metric: str):
                 yerr=[_df["yerr_lower"], _df["yerr_upper"]],
                 fmt="o",
                 color="k",
-                label="Interv. Confiança: 95%",
+                label="I.C.: 95%",
             )
 
         bar_positions = bar_positions + bar_width
 
-    plt.legend(ncol=2)
-    plt.ylabel(metric)
-    plt.ylim([0, 1.1])
-    plt.title("Comparação entre modelos nos diferentes cenários")
+    metric_name = metric.replace("_", " ").title()
+    plt.legend(ncol=3, loc="upper center")
+    plt.ylabel(metric_name)
+    plt.ylim([0, 1.2])
+    plt.title(f"Comparação entre modelos: {metric_name}")
 
     c_models = len(models)
     fontsize = 7

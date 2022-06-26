@@ -18,13 +18,16 @@
 # +
 import pandas as pd
 
-from sklearn.pipeline import Pipeline
-from sklearn.naive_bayes import GaussianNB
+from sklearn.pipeline import make_pipeline
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.svm import SVC
 
-from yellowbrick.classifier import PrecisionRecallCurve, ROCAUC
+# modelos
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 import matplotlib.pyplot as plt
 # -
@@ -34,30 +37,74 @@ df = pd.read_csv("../data/preprocessed/HTRU_2_outliers_removed.csv")
 X, y = df.iloc[:, :-1], df["pulsar"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=0)
 
-metrics = pd.read_csv("../data/results/metrics.csv")
-
-metrics[metrics.scenario_name=="ALL CHARACTERISTICS"]
-
 # ## Models pipelines
 
-gb_pipe = Pipeline(steps=[
-    ("scaler", MinMaxScaler()),
-    ("clf", GaussianNB(var_smoothing=0.01))
-])
+# +
+nb = make_pipeline(MinMaxScaler(), GaussianNB(var_smoothing=.01))
+svm = make_pipeline(MinMaxScaler(), SVC(kernel="poly", C=100, gamma=1, degree=3, random_state=0))
+mlp = make_pipeline(
+    MinMaxScaler(),
+    MLPClassifier(
+        hidden_layer_sizes=(10,),
+        activation="tanh",
+        learning_rate_init=0.1,
+        solver="adam",
+        learning_rate="constant",
+        random_state=0,
+    )
+)
+rf = make_pipeline(
+    MinMaxScaler(),
+    RandomForestClassifier(
+        n_estimators=1000,
+        criterion="entropy",
+        max_depth=200,
+        max_features=5
+    )
+)
 
-svc_pipe = Pipeline(steps=[
-    ("scaler", MinMaxScaler()),
-    ("clf", SVC(kernel="poly", C=100, degree=3, gamma=1, probability=True))
-])
+models = [nb, svm, mlp, rf]
+# -
 
-svc_pipe.fit(X_train, y_train)
-gb_pipe.fit(X_train, y_train)
+for model in models:
+    model.fit(X_train, y_train)
 
-y_proba_svc = svc_pipe.predict_proba(X_test)[:, -1]
-y_pred_svc = svc_pipe.predict(X_test)
+from sklearn.metrics import classification_report
 
-y_proba_gb = gb_pipe.predict_proba(X_test)[:, -1]
-y_pred_gb = gb_pipe.predict(X_test)
+for model in models:
+    y_pred = model.predict(X_test)
+    print(model)
+    print(classification_report(y_test, y_pred))
+
+from sklearn.ensemble import VotingClassifier
+
+# +
+clf = VotingClassifier(estimators=[
+    ("svc", SVC(kernel="poly", C=100, gamma=1, degree=3, random_state=0)),
+    ("mlp", MLPClassifier(
+        hidden_layer_sizes=(10,),
+        activation="tanh",
+        learning_rate_init=0.1,
+        solver="adam",
+        learning_rate="constant",
+        random_state=0,
+    )),
+    ("rf", RandomForestClassifier(
+        n_estimators=1000,
+        criterion="entropy",
+        max_depth=200,
+        max_features=5
+    ))
+], n_jobs=-1)
+
+pipe = make_pipeline(MinMaxScaler(), clf)
+# -
+
+clf.fit(X_train ,y_train)
+
+y_pred = clf.predict(X_test)
+
+print(classification_report(y_test, y_pred))
 
 # ## PR Curves
 
@@ -78,28 +125,13 @@ fig, ax = plt.subplots(dpi=150, figsize=(8, 6))
 ax.yaxis.set_minor_locator(MultipleLocator(.1))
 ax.xaxis.set_minor_locator(MultipleLocator(.1))
 
-PrecisionRecallDisplay.from_predictions(y_test, y_proba_svc, ax=ax, name="SVC", marker='o', markersize=2, linewidth=1, color="#6B62E3")
+PrecisionRecallDisplay.from_predictions(y_test, y_proba_svc, ax=ax, name="SVC (GS)", marker='o', markersize=2, linewidth=1, color="#6B62E3")
+PrecisionRecallDisplay.from_predictions(y_test, y_proba_svc_opt, ax=ax, name="SVC (OPT)", marker='o', markersize=2, linewidth=1, color="#000")
 PrecisionRecallDisplay.from_predictions(y_test, y_proba_gb, ax=ax, name="GaussianNB", marker='s', markersize=2, linewidth=1, color="#E34334")
 
 ax.set_title("Precision-Recall")
 ax.set_xlabel("Recall")
 ax.set_ylabel("Precision")
-
-plt.grid(False)
-plt.show()
-# -
-
-# ## ROC Curves
-
-# +
-fig, ax = plt.subplots(dpi=150, figsize=(8, 6))
-ax.yaxis.set_minor_locator(MultipleLocator(.1))
-ax.xaxis.set_minor_locator(MultipleLocator(.1))
-
-RocCurveDisplay.from_predictions(y_test, y_pred_svc, ax=ax, name="SVC", marker='o', markersize=2, linewidth=2, color="#6B62E3")
-RocCurveDisplay.from_predictions(y_test, y_pred_gb, ax=ax, name="GaussianNB", marker='s', markersize=2, linewidth=2, color="#E34334")
-
-ax.set_title("ROC Curve")
 
 plt.grid(False)
 plt.show()

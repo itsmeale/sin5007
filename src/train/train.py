@@ -1,7 +1,6 @@
 import os
 import warnings
 from functools import partial
-from multiprocessing import Pool
 from pathlib import Path
 
 import pandas as pd
@@ -9,10 +8,15 @@ import pandas as pd
 from src.dataviz.plots import make_bar_chart_comparision
 from src.evaluation.metrics import METRICS, aggregate_metrics
 from src.train.experiment import Experiment
-from src.train.models import MODELS
+from src.train.models import MLP, MODELS, SVM, NaiveBayes, RandomForest
 from src.train.scenarios import SCENARIOS
 
-PARALLEL_JOBS = 9
+models_to_compare = [
+    NaiveBayes.name,
+    SVM.name,
+    MLP.name,
+    RandomForest.name,
+]
 
 
 def run_experiment(experiment: Experiment, X, y, metrics_folder):
@@ -38,14 +42,16 @@ def main():
         for model in MODELS:
             experiments.append(Experiment(scenario=scenario, model=model))
 
-    with Pool(processes=PARALLEL_JOBS) as p:
-        p.map(_run_experiment, experiments)
+    for experiment in experiments:
+        _run_experiment(experiment)
 
     aggregate_metrics(metrics_folder=metrics_folder, save_to=metrics_file)
     metrics_df = pd.read_csv(metrics_file)
 
     for metric in metrics:
-        make_bar_chart_comparision(metrics_df, metric=metric)
+        make_bar_chart_comparision(
+            metrics_df, metric=metric, compare_models=models_to_compare
+        )
 
 
 if __name__ == "__main__":

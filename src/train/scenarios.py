@@ -14,6 +14,7 @@ class Scenario:
     name: str
     is_balanced: bool
     feature_selection: str
+    has_fs: bool
     metrics: Dict
     preprocessing_steps: Pipeline
     best_params: Dict = None
@@ -24,6 +25,7 @@ class AllCharacteristicsScenario(Scenario):
     name = "ALL CHARACTERISTICS"
     is_balanced = False
     feature_selection = "ALL CHARACTERISTICS"
+    has_fs = False
     metrics = METRICS
     preprocessing_steps = [
         ("scaler", MinMaxScaler()),
@@ -34,6 +36,7 @@ class PCAScenario(Scenario):
     name = "PCA"
     is_balanced = False
     feature_selection = "PCA"
+    has_fs = True
     metrics = METRICS
     preprocessing_steps = [
         ("scaler", MinMaxScaler()),
@@ -45,6 +48,7 @@ class MIScenario(Scenario):
     name = "Percentile"
     is_balanced = False
     feature_selection = "Select Percentile"
+    has_fs = True
     metrics = METRICS
     preprocessing_steps = [
         ("scaler", MinMaxScaler()),
@@ -56,6 +60,7 @@ class SmartCorrelated(Scenario):
     name = "Smart Correlated"
     is_balanced = False
     feature_selection = "Smart Correlated"
+    has_fs = True
     metrics = METRICS
     preprocessing_steps = [
         ("scaler", MinMaxScaler()),

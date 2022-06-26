@@ -1,0 +1,2 @@
+model_name,scenario_name,is_balanced,feature_selection,param_grid,best_params,accuracy,accuracy_ci_lower,accuracy_ci_upper,precision,precision_ci_lower,precision_ci_upper,recall,recall_ci_lower,recall_ci_upper,f1_score,f1_score_ci_lower,f1_score_ci_upper
+TabNet,Smart Correlated,False,Smart Correlated,[{}],{},0.9562836515630112,0.9372924744802644,0.975274828645758,0.8673713363931578,0.6485976601698995,1.0861450126164156,0.5432980599647266,0.3209537060844887,0.7656424138449647,0.6346268879190675,0.4091764967839026,0.8600772790542324
