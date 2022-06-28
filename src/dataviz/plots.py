@@ -12,7 +12,7 @@ plt.rcParams["xtick.major.size"] = 5.0
 plt.rcParams["xtick.minor.size"] = 3.0
 plt.rcParams["ytick.major.size"] = 5.0
 plt.rcParams["ytick.minor.size"] = 3.0
-plt.rcParams["axes.linewidth"] = 2.5
+plt.rcParams["axes.linewidth"] = 2
 plt.rcParams["xtick.direction"] = "out"
 plt.rcParams["ytick.direction"] = "in"
 
@@ -102,25 +102,28 @@ def make_bar_chart_comparision(
     models = compare_models
     scenarios = df["scenario_name"].unique()
 
-    colors = ["#6A71EB", "#52EB83", "#EB3E3B", "#EBC946"]
+    colors = ["#405ADB", "#52EB83", "#EB3E3B", "#EBC946", "#35DBD4"]
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
     bar_width = 0.3
-    bar_positions = np.arange(len(scenarios)) * 1.6
+    bar_positions = np.arange(len(scenarios)) * 1.8
     bar_mean_positions = np.zeros(bar_positions.shape)
 
     ax.yaxis.set_minor_locator(MultipleLocator(0.1))
+    ax.set_axisbelow(True)
+    ax.grid(color="#F0F0F2")
 
     for idx, model in enumerate(models):
         bar_mean_positions = bar_mean_positions + bar_positions
         _df = df[df.model_name == model]
 
-        plt.bar(
+        bars = ax.bar(
             bar_positions,
             _df[metric],
             width=bar_width,
             edgecolor="k",
+            linewidth=.2,
             color=colors[idx],
             label=model,
         )

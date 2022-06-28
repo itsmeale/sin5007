@@ -29,9 +29,11 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
         X_train, X_test = X.iloc[train_idx, :], X.iloc[test_idx, :]
         y_train, y_test = y[train_idx], y[test_idx]
 
+        preprocessor = Pipeline(steps=scenario.preprocessing_steps)
+        X_train = preprocessor.fit_transform(X_train)
+
         clf = Pipeline(
             steps=[
-                *scenario.preprocessing_steps,
                 ("clf", model.classifier(**model.fixed_params)),
             ]
         )
@@ -40,11 +42,11 @@ def __run_kfolds(scenario, model, params, k, X, y, criterion, metrics):
 
         # ajuste e predicoes
         clf.fit(
-            X_train.values,
-            y_train.values,
+            X_train,
+            y_train,
             **model.fit_params,
         )
-        y_pred = clf.predict(X_test.values)
+        y_pred = clf.predict(preprocessor.transform(X_test))
 
         # calcula metricas
         for metric in metrics.keys():
