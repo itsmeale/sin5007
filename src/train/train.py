@@ -8,7 +8,7 @@ import pandas as pd
 from src.dataviz.plots import make_bar_chart_comparision
 from src.evaluation.metrics import METRICS, aggregate_metrics
 from src.train.experiment import Experiment
-from src.train.models import MLP, MODELS, SVM, NaiveBayes, RandomForest
+from src.train.models import MLP, MODELS, SVM, NaiveBayes, RandomForest, TabNet
 from src.train.scenarios import SCENARIOS
 
 models_to_compare = [
@@ -16,6 +16,7 @@ models_to_compare = [
     SVM.name,
     MLP.name,
     RandomForest.name,
+    TabNet.name,
 ]
 
 
